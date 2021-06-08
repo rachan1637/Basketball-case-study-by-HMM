@@ -1,10 +1,10 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2021.5.6)  7 JUN 2021 15:59
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2021.5.6)  8 JUN 2021 22:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"/Users/yhschan/Desktop/HMM - basketball modeling/LateX Workspace/HMM Chapter 4"
-(/Users/yhschan/Desktop/HMM - basketball modeling/LateX Workspace/HMM Chapter 4.tex
+**"/Users/yhschan/Desktop/HMM - basketball modeling/Basketball-case-study-by-HMM/LateX Workspace/HMM Chapter 5"
+(/Users/yhschan/Desktop/HMM - basketball modeling/Basketball-case-study-by-HMM/LateX Workspace/HMM Chapter 5.tex
 LaTeX2e <2020-10-01> patch level 4
 L3 programming layer <2021-02-18> (/usr/local/texlive/2021/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
@@ -278,8 +278,8 @@ Package fontspec Info: Font family 'FandolSong-Regular(0)' created for font
 (fontspec)             <->"[FandolKai-Regular.otf]/OT:language=dflt;"
 (fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.: 
 
-(./HMM Chapter 4.aux)
-\openout1 = `"HMM Chapter 4.aux"'.
+No file "HMM Chapter 5".aux.
+\openout1 = `"HMM Chapter 5.aux"'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
 LaTeX Font Info:    ... okay on input line 17.
@@ -291,7 +291,7 @@ LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
 LaTeX Font Info:    ... okay on input line 17.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 17.
- (/usr/local/texlive/2021/texmf-dist/tex/latex/base/ts1cmr.fd
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 17.
@@ -360,68 +360,179 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 
-Overfull \hbox (0.22871pt too wide) in paragraph at lines 21--22
-[]\TU/lmr/m/n/10 A commonly used method of finding maximum-likelihood estimates of HMMs
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 25--31
+Underfull \hbox (badness 10000) in paragraph at lines 20--23
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 25--31
+Underfull \hbox (badness 10000) in paragraph at lines 39--42
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 31--37
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 31--37
+Underfull \hbox (badness 10000) in paragraph at lines 44--47
 
  []
 
 [1
 
 ]
-File: prop 2.png Graphic file (type bmp)
-<prop 2.png>
-
-Underfull \hbox (badness 10000) in paragraph at lines 54--58
+Underfull \hbox (badness 10000) in paragraph at lines 47--56
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--67
+Underfull \hbox (badness 10000) in paragraph at lines 47--56
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--67
+Underfull \hbox (badness 10000) in paragraph at lines 62--66
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--66
 
  []
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 70--74
+Overfull \hbox (2.8998pt too wide) in paragraph at lines 71--74
+\TU/lmr/m/n/10 The forecast distribution can therefore be written as a mixture of state-dependent
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--84
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 74--79
+Underfull \hbox (badness 10000) in paragraph at lines 87--89
 
  []
 
-[3] (./HMM Chapter 4.aux) ) 
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 92--98
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 92--98
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 103--106
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 108--116
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 108--116
+
+ []
+
+[4]
+File: viterbi.png Graphic file (type bmp)
+<viterbi.png>
+
+Underfull \hbox (badness 10000) in paragraph at lines 126--135
+
+ []
+
+
+/Users/yhschan/Desktop/HMM - basketball modeling/Basketball-case-study-by-HMM/LateX Workspace/HMM Chapter 5.tex:140: LaTeX Error: Bad math environment delimiter.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.140 $$L_T Pr(C_t = i | X^{(T)} = x^{(T)}) = \[
+                                                 \begin{cases} \alpha_T \Gam...
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+/Users/yhschan/Desktop/HMM - basketball modeling/Basketball-case-study-by-HMM/LateX Workspace/HMM Chapter 5.tex:140: Missing \endgroup inserted.
+<inserted text> 
+                \endgroup 
+l.140 ...text{for $1 \leq t \leq T$} \end{cases}\]
+                                                  $$
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+[5]
+
+/Users/yhschan/Desktop/HMM - basketball modeling/Basketball-case-study-by-HMM/LateX Workspace/HMM Chapter 5.tex:140: LaTeX Error: \begin{document} ended by \end{equation*}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.140 ...text{for $1 \leq t \leq T$} \end{cases}\]
+                                                  $$
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+/Users/yhschan/Desktop/HMM - basketball modeling/Basketball-case-study-by-HMM/LateX Workspace/HMM Chapter 5.tex:140: Extra \endgroup.
+<recently read> \endgroup 
+                          
+l.140 ...text{for $1 \leq t \leq T$} \end{cases}\]
+                                                  $$
+Things are pretty mixed up, but I think the worst is over.
+
+/Users/yhschan/Desktop/HMM - basketball modeling/Basketball-case-study-by-HMM/LateX Workspace/HMM Chapter 5.tex:141: Display math should end with $$.
+<to be read again> 
+                   e
+l.141 where $e
+              _i = (0, ..., 0, 1, 0, ..., 0)$ has a one in the ith position ...
+The `$' that I just saw supposedly matches a previous `$$'.
+So I shall assume that you typed `$$' both times.
+
+/Users/yhschan/Desktop/HMM - basketball modeling/Basketball-case-study-by-HMM/LateX Workspace/HMM Chapter 5.tex:141: Missing $ inserted.
+<inserted text> 
+                $
+l.141 where $e_
+               i = (0, ..., 0, 1, 0, ..., 0)$ has a one in the ith position ...
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 144--153
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 144--153
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 144--153
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 144--153
+
+ []
+
+[6] (./HMM Chapter 5.aux) ) 
 Here is how much of TeX's memory you used:
- 7383 strings out of 476919
- 183293 string characters out of 5821841
- 544112 words of memory out of 5000000
+ 7381 strings out of 476919
+ 183350 string characters out of 5821841
+ 547124 words of memory out of 5000000
  27321 multiletter control sequences out of 15000+600000
  407735 words of font info for 58 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 82i,6n,88p,369b,313s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 82i,12n,88p,572b,313s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on HMM Chapter 4.pdf (3 pages).
+Output written on HMM Chapter 5.pdf (6 pages).

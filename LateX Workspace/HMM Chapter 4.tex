@@ -80,10 +80,57 @@ $$Pr(C_t = j | X^{(T)} = x^{(T)}) = \alpha_t(j) \beta_t(j) / L_T$$
 and secondly, for $t = 2, ..., T$
 $$Pr(C_{t-1} = j, C_t = k | X^{(T)} = x^{(T)}) = \alpha_{t-1}(j) \gamma_{jk} p_k(x_t) \beta_t(k) / L_T$$
 
-\section*{The EM algorithm}
+\section*{II. The EM algorithm}
 
+Since the sequence of states occupied by the Markov-chain component of an HMM is not observed, a natural approach to parameter estimation in HMMs is to treat those states as missing data and to employ the EM algorithm for finding maximum likelihood estimates of the parameters. 
 
+\subsection*{2.1 EM in general}
+The EM algorithm is an iterative method for performing maximum likelihood estimation when some of the data are missing, and exploits the fact that the complete-data log-likelihood may be staightforward to maximize even if the likelihood of ther obserd data is not. \\
+\\
+\textbf{- E Step} \\
+Compute the conditional expectations of the missing data given the observations and given current estimate of $\theta$. \\
+\\
+\textbf{- M step} \\
+Maximize, with respect to $\theta$, the CDLL with the functions of the missing data replaced in it by their conditional expectations. \\
 
+\subsection*{2.2 EM for HMMs}
+In the case of an HMM it is convenient to represent the sequence of states $c_1, ..., c_T$ followed by the Markov chain by the zero-one random variables defined as follows:
+$$u_j(t) = 1 \text{ if and only if } c_t = j \text{ ($t = 1, ..., T$)}$$ 
+and 
+$$v_{jk}(t) = 1 \text{ if and only if } c_{t-1} = j \text{ and } c_t = k \text{ ($t = 2, ..., T$) }$$
+\\
+With this notation, the CDLL of an HMM is given by
+\begin{align}
+    log(Pr(x^{(T)}, c^{(T)})) & = log(\delta_c_1 \Pi_{t=2}^T \gamma_{c_{t-1}, c_t} \Pi_{t=1}^T p_{c_t}(x_t)) \\
+    & = \text{log } \delta_{c_1} + \sum_{t=2}^T \text{log } \delta_{c_{t-1}, c_t} + \sum_{t=1}^T \text{log } p_{c_t}(x_t) \\
+    & = \sum_{j=1}^m u_j(1) \text{log } \delta_j + \sum_{j=1}^m \sum_{k=1}^m (\sum_{t=2}^T v_{jk}(t)) \text{ log } \gamma_{jk} + \sum_{j=1}^m \sum_{t=1}^T u_j(t) \text{ log }p_j(x_t) \\
+    & = \text{term1} + \text{term2} + \text{term3}
+\end{align}
+\\
+\textbf{- E step} \\
+Replace all the quantities $v_{jk}(t)$ and $u_j(t)$ by their conditional expectations given the observations $x^{(T)}$
+$$\hat{u_j}(t) = Pr(C_t = j | x^{(T)}) = \alpha_t(j) \beta_t(j) / L_T$$
+and
+$$\hat{v_{jk}}(t) = Pr(C_{t-1} = j, C_t = k | x^{(T)}) = \alpha_{t-1}(j) \gamma_{jk} p_k(x_t) \beta_t(k) / L_T$$
+\\
+\textbf{- M step} \\
+Having replace $v_{jk}(t)$ and $u_j(t)$ by the estimates, maximize the CDLL with respect to the three sets of parameters: the initial distribution $\delta$, the t.p.m $\Gamma$ and the parameters of the state-dependent distributions (e.g. $\lambda_1, ..., \lambda_m$) \\
+\\
+The M step splits neatly into three separate maximizations, since term 1 depends on only $\delta$, term 2 on the t.p.m $\Gamma$, and term 3 on the 'state-dependent parameters'. We must therefore maximize: \\
+\\
+1. $\sum_{j=1}^m \hat{u_j}(1) \text{ log }\delta_j$ with respect to $\delta$ \\
+\\
+2. $\sum_{j=1}^m \sum_{k=1}^m (\sum_{t=2}^T \hat{v_{jk}} (t))$ with respect to $\Gamma$ \\
+\\
+3. $\sum_{j=1}^m \sum_{t=1}^T \sum_{t=2}^T \hat{u_{j}}(t) \text{ log } p_j(x_t)$ with respect to state-dependent parameters \\
+\\
+\\
+The solutions is as follows: \\
+1. Set $\delta_j = \hat{u_j}(1) / \sum_{j=1}^m \hat{u_j}(1) = \hat{u_j}(1)$ \\
+\\
+2. Set $\gamma_{jk} = f_{jk} / \sum_{k=1}^m f_{jk}$, where $f_{jk} = \sum_{t=2}^T \hat{v_jk}(t)$. \\
+\\
+3. The maximization of the third term may be easy or difficult, depending on the nature of the state-dependent distributions assumed. It is essentially the standard prblem of maximum likelihood estimation for the distributions concerned.
 
 
 
