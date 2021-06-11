@@ -8,7 +8,7 @@ The textbook we use is "Hidden Markov Models for Time Series: An Introduction Us
 
 Writing codes for simulating a simple basketball game (leading or falling behind, and what are the strategies under these cases) by HMM.
 
-The codes are written in R and R Studio [Simple Basketball Game Simulation by HMM](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Practice%20Code/Simulating-HMM-basketball.Rmd), and the report can be found [here](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Practice%20Code/Simulating-HMM-basketball.pdf)
+The codes are written in R and R Studio [Simple Basketball Game Simulation by HMM](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Practice%20Code/Simulating-HMM-basketball.Rmd), and the report can be found [here](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Practice%20Code/Simulating-HMM-basketball.pdf).
 
 ## Completed Progress
 
