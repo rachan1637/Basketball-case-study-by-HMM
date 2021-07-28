@@ -6,6 +6,8 @@ The textbook we use is "Hidden Markov Models for Time Series: An Introduction Us
 
 ## Ongoing Progress 
 
+Identify the 3pt shooting together with long pass. Consider the dribble, and other complex basketball events.
+
 ## Completed Progress
 
 ### June-July
