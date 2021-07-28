@@ -12,7 +12,7 @@ Identify the 3pt shooting together with long pass. Consider the dribble, and oth
 
 ### June-July
 
-1. Idetify the long pass and 3pt shooting.
+(a) Idetify the long pass and 3pt shooting.
 
 The preprocessing codes are written in python ([preprocess data](https://github.com/rachan1637/Basketball-case-study-by-HMM/tree/main/Basketball/data_preprocess)).
 
@@ -22,7 +22,7 @@ Two gifs are made for the identification respectively, [pass](https://github.com
 
 
 
-2. Identify the layup following other's case.
+(b) Identify the layup following other's case.
 
 The codes are written in R and R Studio, the pdf file is in the same location: [Identify the Layup by HMM](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/basketball.pdf).
 
@@ -30,7 +30,7 @@ Reference: [Tagging Basketball Events with HMM in stan](https://mc-stan.org/user
 
 
 
-3. Writing codes for simulating a simple basketball game (leading or falling behind, and what are the strategies under these cases) by HMM.
+(c) Writing codes for simulating a simple basketball game (leading or falling behind, and what are the strategies under these cases) by HMM.
 
 The codes are written in R and R Studio [Simple Basketball Game Simulation by HMM](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Practice%20Code/Simulating-HMM-basketball.Rmd), and the report can be found [here](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Practice%20Code/Simulating-HMM-basketball.pdf).
 
