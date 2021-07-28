@@ -1,6 +1,7 @@
 ---
-title: "basketball2"
-output: html_document
+title: "Identify long pass and 3pt shooting"
+output: 
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -10,60 +11,42 @@ library(gganimate)
 source("normal-hmm-2state.R")
 ```
 
-# Data Visualization
+# Simply check the movement and event data
 
-```{r}
-event <- read_csv('data/CHA-TOR-events.csv')
-data <- read_csv("data/CHA-TOR.csv")
-data %>% filter(player_id == -1)
+```{r, echo = FALSE}
+event <- read_csv('data/CHA-TOR-events.csv', col_types = cols())
+data <- read_csv("data/CHA-TOR.csv", col_types = cols())
+head(data)
+head(event)
 ```
 
-```{r}
-event
+# Look at Event 1 and the movement of ball
+
+There seems to exist two pass in the ball movement. Kyle Lowry initially dribbles the ball and pass it to others
+
+```{r, echo = FALSE}
+defaultW <- getOption("warn")
+options(warn = -1)
+event1 <- read_csv('data/event1_passing.csv', col_types = cols()) %>% rename(index = 'X1')
+event1_ball <- event1 %>% filter(player_id == 'ball')
+event1 %>% filter(player_id == 'ball') %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = player_id) %>% geom_point() + xlim(0, 100) + ylim(0, 50) + ggtitle("Movement of the ball")
+event1 %>% filter((player_id == 'ball' | player_id == 'Kyle Lowry' | player_id == "DeMar DeRozan") & game_clock > 708.5) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = player_id) %>% geom_point() + xlim(0, 100) + ylim(0, 50) + ggtitle("The first pass and players")
+event1 %>% filter((player_id == 'ball' | player_id == "DeMar DeRozan" | player_id == "Luis Scola") & game_clock < 708.5 & game_clock > 706.5) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = player_id) %>% geom_point() + xlim(0, 100) + ylim(0, 50) + ggtitle("The second pass and players")
 ```
 
-
-
-```{r}
-data %>% filter(quarter == 1 & event_id == 6 & player_id == 2449) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = as.factor(player_id)) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
-d <- data %>% filter(quarter == 1 &  event_id == 6 & (player_id == 200768 | player_id == -1)) 
-plot((d %>% filter(player_id == 200768))$y_loc, type = "l")
-plot((d %>% filter(player_id == -1) %>% slice(400:n()))$y_loc, type = "l")
-# plot((d %>% filter(player_id == 201946))$y_loc_original, type = "l")
-event %>% filter(EVENTNUM == 5)
-```
-
-```{r}
-data %>% filter(event_id == 1 & player_id == -1 & game_clock != 707.54) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = as.factor(player_id)) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
-data %>% filter(event_id == 1 & player_id == -1 ) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = as.factor(player_id)) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
-```
 # Fit the passing
 
-```{r}
-event1 <- read_csv('data/event1_passing.csv')
-event1_ball <- event1 %>% filter(player_id == 'ball')
-event1_ball
+We preprocess the data (using python) and calculate the speed for each player and the ball at each timestep.
+
+```{r, echo = FALSE}
+head(event1_ball)
 ```
 
-```{r}
-event1_ball %>% ggplot() + aes(x = x_loc_original, y = y_loc_original) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
-event1 %>% filter(player_id == "Kyle Lowry") %>% ggplot() + aes(x = x_loc_original, y = y_loc_original) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+```{r, echo = FALSE}
 plot(event1_ball$speed, type = 'l')
 ```
 
-```{r}
-# investigate the initial value of hmm value
-#mean
-mean((event1 %>% filter(X1 > 50 & X1 < 70))$ball_speed); mean((event1 %>% filter(X1 > 100 & X1 < 120))$ball_speed)
-mean((event1 %>% filter(X1 < 50))$ball_speed); mean((event1 %>% filter(X1 > 70 & X1 < 100))$ball_speed); mean((event1 %>% filter(X1 > 120))$ball_speed)
-#sd
-sd((event1 %>% filter(X1 > 50 & X1 < 70))$ball_speed); sd((event1 %>% filter(X1 > 100 & X1 < 120))$ball_speed)
-sd((event1 %>% filter(X1 < 50))$ball_speed); sd((event1 %>% filter(X1 > 70 & X1 < 100))$ball_speed); sd((event1 %>% filter(X1 > 120))$ball_speed)
-# transition probability
-1/40 * exp(-1/40 * 40)
-1/20 * exp(-1/20 * 20)
-```
-We are fitting two states, a pass occurs or a pass doesn't occur.
+After investigating the speed data for these two potential state, we assign the initial value and starting fitting two states, a pass occurs or a pass doesn't occur.
 
 ```{r}
 # number of states, 2
@@ -78,16 +61,17 @@ gamma <- matrix(c(0.99, 0.01, 0.02, 0.98), m, m, byrow = TRUE)
 delta <- c(1, 0)
 ```
 
-```{r}
+```{r, echo = FALSE}
 defaultW <- getOption("warn")
 options(warn = -1)
 # Fit the hmm model by maximum likelihood
 event1_ball_speed <- norm.HMM.fit(event1_ball$speed, m, mu, sigma, gamma, stationary = TRUE)
 # Calculate the se for the model params
 event1_ball_speed_se <- norm.HMM.params_SE(event1_ball$speed, 20, event1_ball_speed, stationary = TRUE)
+event1_ball_speed
 ```
 
-```{r}
+```{r, include = FALSE}
 defaultW <- getOption("warn")
 options(warn = -1)
 ball_speed_range <- round(min(event1_ball$speed)):round(max(event1_ball$speed))
@@ -96,39 +80,50 @@ state_seq <- norm.HMM.viterbi(event1_ball$speed, event1_ball_speed)
 event1_ball_speed$GuessState <- as.factor(state_seq)
 ```
 
-```{r}
+```{r, echo = FALSE}
 data_ball_speed <- data.frame(Time = c(1: length(event1_ball$speed)),
                               Observation = event1_ball$speed,
                               x_loc_original = event1_ball$x_loc_original,
                               y_loc_original = event1_ball$y_loc_original)
 data_ball_speed$GuessState <- as.factor(state_seq)
+data_ball_speed <- data_ball_speed %>% mutate(smooth_speed = ifelse(GuessState == 1, 10, 35))
 norm_hist_dist_CI(m, data_ball_speed, event1_ball_speed, ball_speed_ci_plot, width = 1)
 timeseriesfit(head(data_ball_speed, 150))
 ```
 
-```{r}
-data_ball_speed
-gif_passing <- data_ball_speed %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = GuessState, size = Observation) + geom_point() + xlim(0, 100) + ylim(0, 50) + transition_time(Time) + ease_aes('linear')
-animate(gif_passing, renderer=gifski_renderer("event1_passing.gif"), duration = 12)
+```{r, include = FALSE}
+# gif_passing <- data_ball_speed %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = GuessState, size = smooth_speed) + geom_point() + xlim(0, 100) + ylim(0, 50) + transition_time(Time) + ease_aes('linear')
+# animate(gif_passing, renderer=gifski_renderer("event1_passing.gif"))
 ```
 
 
 # 3-pt shooting
 
-```{r}
-event28 <- read_csv("data/event28_3pt.csv")
+We also prepare the data for three point shooting.
+
+```{r, echo = FALSE}
+defaultW <- getOption("warn")
+options(warn = -1)
+event28 <- read_csv("data/event28_3pt.csv", col_types = cols())
 event28 <- event28 %>% rename(index = 'X1')
 three_pt <- event28 %>% filter(game_clock > 549)
-three_pt
+head(three_pt)
 ```
 
-```{r}
-gif_3pt <- three_pt %>% filter(team_id == 'TOR' | team_id == 'ball') %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = player_id, size = speed) + geom_point() + xlim(0, 100) + ylim(0, 50) + transition_time(index) + ease_aes('linear')
-animate(gif_3pt, renderer=gifski_renderer("event28_3pt.gif"), duration = 20)
-```
+I want to fit it together with passing/dribbling, but right now I think the speed enough for long passing, but it is not enough to identify the dribble by player and shoot by player (since they are close). 
 
-```{r}
+I believe distance to the hoop could be another criteria for us to identify a shooting.  
+
+```{r, echo = FALSE}
+three_pt %>% filter(team_id == 'ball' & game_clock > 554.5) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
 plot((three_pt %>% filter(team_id == 'ball'))$speed, type = 'l')
+```
+
+Lastly, I create two gif plots.
+
+```{r, include = FALSE}
+# gif_3pt <- three_pt %>% filter(team_id == 'TOR' | team_id == 'ball') %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = player_id, size = speed) + geom_point() + xlim(0, 100) + ylim(0, 50) + transition_time(index) + ease_aes('linear')
+# animate(gif_3pt, renderer=gifski_renderer("event28_3pt.gif"), duration = 20)
 ```
 
 
