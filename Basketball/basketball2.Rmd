@@ -6,6 +6,8 @@ output: html_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(dplyr)
+library(gganimate)
+source("normal-hmm-2state.R")
 ```
 
 # Data Visualization
@@ -13,8 +15,13 @@ library(dplyr)
 ```{r}
 event <- read_csv('data/CHA-TOR-events.csv')
 data <- read_csv("data/CHA-TOR.csv")
-data
+data %>% filter(player_id == -1)
 ```
+
+```{r}
+event
+```
+
 
 
 ```{r}
@@ -30,15 +37,104 @@ event %>% filter(EVENTNUM == 5)
 data %>% filter(event_id == 1 & player_id == -1 & game_clock != 707.54) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = as.factor(player_id)) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
 data %>% filter(event_id == 1 & player_id == -1 ) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = as.factor(player_id)) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
 ```
+# Fit the passing
 
 ```{r}
-event1 <- read_csv("data/event1.csv")
-event1
+event1 <- read_csv('data/event1_passing.csv')
+event1_ball <- event1 %>% filter(player_id == 'ball')
+event1_ball
 ```
+
 ```{r}
-event1  %>% ggplot() + aes(x = ball_x_loc, y = ball_y_loc) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
-event1 %>% filter(X1 > 50 & X1 < 70) %>% ggplot() + aes(x = ball_x_loc, y = ball_y_loc) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
-event1 %>% filter(X1 > 100 & X1 < 120) %>% ggplot() + aes(x = ball_x_loc, y = ball_y_loc) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
-plot(event1$ball_speed, type = 'l')
+event1_ball %>% ggplot() + aes(x = x_loc_original, y = y_loc_original) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+event1 %>% filter(player_id == "Kyle Lowry") %>% ggplot() + aes(x = x_loc_original, y = y_loc_original) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+plot(event1_ball$speed, type = 'l')
 ```
+
+```{r}
+# investigate the initial value of hmm value
+#mean
+mean((event1 %>% filter(X1 > 50 & X1 < 70))$ball_speed); mean((event1 %>% filter(X1 > 100 & X1 < 120))$ball_speed)
+mean((event1 %>% filter(X1 < 50))$ball_speed); mean((event1 %>% filter(X1 > 70 & X1 < 100))$ball_speed); mean((event1 %>% filter(X1 > 120))$ball_speed)
+#sd
+sd((event1 %>% filter(X1 > 50 & X1 < 70))$ball_speed); sd((event1 %>% filter(X1 > 100 & X1 < 120))$ball_speed)
+sd((event1 %>% filter(X1 < 50))$ball_speed); sd((event1 %>% filter(X1 > 70 & X1 < 100))$ball_speed); sd((event1 %>% filter(X1 > 120))$ball_speed)
+# transition probability
+1/40 * exp(-1/40 * 40)
+1/20 * exp(-1/20 * 20)
+```
+We are fitting two states, a pass occurs or a pass doesn't occur.
+
+```{r}
+# number of states, 2
+m <- 2
+# the mean of two state
+mu <- c(9, 26)
+# standard deviation of two states
+sigma <- c(12, 4)
+# transition probability
+gamma <- matrix(c(0.99, 0.01, 0.02, 0.98), m, m, byrow = TRUE)
+# Initial state probability
+delta <- c(1, 0)
+```
+
+```{r}
+defaultW <- getOption("warn")
+options(warn = -1)
+# Fit the hmm model by maximum likelihood
+event1_ball_speed <- norm.HMM.fit(event1_ball$speed, m, mu, sigma, gamma, stationary = TRUE)
+# Calculate the se for the model params
+event1_ball_speed_se <- norm.HMM.params_SE(event1_ball$speed, 20, event1_ball_speed, stationary = TRUE)
+```
+
+```{r}
+defaultW <- getOption("warn")
+options(warn = -1)
+ball_speed_range <- round(min(event1_ball$speed)):round(max(event1_ball$speed))
+ball_speed_ci_plot <- norm.HMM.CI_MonteCarlo(ball_speed_range, m = 2, n = length(event1_ball$speed), event1_ball_speed_se)
+state_seq <- norm.HMM.viterbi(event1_ball$speed, event1_ball_speed)
+event1_ball_speed$GuessState <- as.factor(state_seq)
+```
+
+```{r}
+data_ball_speed <- data.frame(Time = c(1: length(event1_ball$speed)),
+                              Observation = event1_ball$speed,
+                              x_loc_original = event1_ball$x_loc_original,
+                              y_loc_original = event1_ball$y_loc_original)
+data_ball_speed$GuessState <- as.factor(state_seq)
+norm_hist_dist_CI(m, data_ball_speed, event1_ball_speed, ball_speed_ci_plot, width = 1)
+timeseriesfit(head(data_ball_speed, 150))
+```
+
+```{r}
+data_ball_speed
+gif_passing <- data_ball_speed %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = GuessState, size = Observation) + geom_point() + xlim(0, 100) + ylim(0, 50) + transition_time(Time) + ease_aes('linear')
+animate(gif_passing, renderer=gifski_renderer("event1_passing.gif"), duration = 12)
+```
+
+
+# 3-pt shooting
+
+```{r}
+event28 <- read_csv("data/event28_3pt.csv")
+event28 <- event28 %>% rename(index = 'X1')
+three_pt <- event28 %>% filter(game_clock > 549)
+three_pt
+```
+
+```{r}
+gif_3pt <- three_pt %>% filter(team_id == 'TOR' | team_id == 'ball') %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = player_id, size = speed) + geom_point() + xlim(0, 100) + ylim(0, 50) + transition_time(index) + ease_aes('linear')
+animate(gif_3pt, renderer=gifski_renderer("event28_3pt.gif"), duration = 20)
+```
+
+```{r}
+plot((three_pt %>% filter(team_id == 'ball'))$speed, type = 'l')
+```
+
+
+
+
+
+
+
 
