@@ -99,6 +99,7 @@ sim_hmm_basketball <- function(t, N, initial, transition, state_dist, state_acti
 
 ```{r}
 # simulation process
+set.seed(6)
 game1 <- sim_hmm_basketball(16, N, initial, transition, state_dist, state_actions)
 
 knitr::kable(game1)
@@ -126,5 +127,61 @@ Considering it as a real game, we can see some interesting facts. For example, o
 Of course, I think the model is problematic, since the next state (i.e. leading or falling behind) should not be independent from the current strategy, but HMM doesn't have the property (i.e. the current result and the next state are independent).  
 
 This is just a simple simulation comes into my mind first, I will continue to fit some discrete and continuous distribution as practice.
+
+# Simulate HMM for continuous data. 
+
+This is a simulation without much complicated assumption or cases.  
+
+Simply, there are two hidden states ($z = 1$ and $z = 2$) and the state-dependent distribution are $N(\mu_z, 1)$.  
+
+Here, the initial probability of being in any of two states and the probability of transiting between two states are all the same (i.e. all 0.5), and the mean of state dependent distribution to be 4 and 6.
+
+The time we expect here is the same as the number of minutes in a bseketball game (i.e. 48).
+
+```{r}
+t <- 48
+N <- 2
+initial = c(0.5, 0.5)
+transition <- matrix(list(), nrow = 2, ncol = 2)
+transition[1, ] = c(0.5, 0.5)
+transition[2, ] = c(0.5, 0.5)
+state_dist = c(4, 6)
+```
+
+```{r}
+sim_hmm_basketball_cont <- function(t, N, initial, transition, state_dist){
+  df = data.frame(index = c(1:t), state = numeric(N), observation = numeric(N))
+  state = sample(x = c(1:N), size = 1, prob = initial)
+  obs = rnorm(n = 1, mean = state_dist[state], sd = 1)
+  df$state[1] = state
+  df$observation[1] = obs
+  
+  for (i in 2:t) {
+    trans_prob = transition[state, ]
+    state = sample(x = c(1:N), size = 1, prob = trans_prob)
+    obs = rnorm(n=1, mean = state_dist[state], sd = 1)
+    df$state[i] = state
+    df$observation[i] = obs
+  }
+  
+  return(df)
+}
+```
+
+```{r}
+set.seed(9)
+df = sim_hmm_basketball_cont(t, N, initial, transition, state_dist)
+plot(df$state, type = 's', main = 'Hidden State', ylab = 'State Value', xlab = 'time', ylim = c(0.5, 2.5), yaxt = 'n')
+```
+
+```{r}
+plot(df$observation, type = 'l', main = "Observed Output", ylab = 'Observation Value', xlab = 'Time')
+y_plt = df$observation
+y_plt[df$state == 1] <- NA
+lines(y_plt, lwd = 3)
+legend("bottomright", c("State 1", "State 2"), lty = c(1, 1), lwd = c(1, 3), cex = 0.8)
+```
+
+
 
 

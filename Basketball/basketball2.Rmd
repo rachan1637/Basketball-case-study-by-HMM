@@ -1,0 +1,44 @@
+---
+title: "basketball2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(dplyr)
+```
+
+# Data Visualization
+
+```{r}
+event <- read_csv('data/CHA-TOR-events.csv')
+data <- read_csv("data/CHA-TOR.csv")
+data
+```
+
+
+```{r}
+data %>% filter(quarter == 1 & event_id == 6 & player_id == 2449) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = as.factor(player_id)) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+d <- data %>% filter(quarter == 1 &  event_id == 6 & (player_id == 200768 | player_id == -1)) 
+plot((d %>% filter(player_id == 200768))$y_loc, type = "l")
+plot((d %>% filter(player_id == -1) %>% slice(400:n()))$y_loc, type = "l")
+# plot((d %>% filter(player_id == 201946))$y_loc_original, type = "l")
+event %>% filter(EVENTNUM == 5)
+```
+
+```{r}
+data %>% filter(event_id == 1 & player_id == -1 & game_clock != 707.54) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = as.factor(player_id)) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+data %>% filter(event_id == 1 & player_id == -1 ) %>% ggplot() + aes(x = x_loc_original, y = y_loc_original, color = as.factor(player_id)) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+```
+
+```{r}
+event1 <- read_csv("data/event1.csv")
+event1
+```
+```{r}
+event1  %>% ggplot() + aes(x = ball_x_loc, y = ball_y_loc) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+event1 %>% filter(X1 > 50 & X1 < 70) %>% ggplot() + aes(x = ball_x_loc, y = ball_y_loc) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+event1 %>% filter(X1 > 100 & X1 < 120) %>% ggplot() + aes(x = ball_x_loc, y = ball_y_loc) %>% geom_point() + xlim(0, 100) + ylim(0, 50)
+plot(event1$ball_speed, type = 'l')
+```
+

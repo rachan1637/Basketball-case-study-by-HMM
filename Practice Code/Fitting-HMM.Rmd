@@ -1,0 +1,196 @@
+---
+title: "Fitting-HMM"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+# Fit Poisson HMM
+
+```{r}
+#  (Poisson) Transform Natural Parameters to working parameters
+pois.HMM.pn2pw <- function(m, lambda, gamma, delta = NULL, stationary = TRUE)
+{
+  # Transform lambda by taking log
+  tlambda <- log(lambda)
+  # Transform gamma by log(gamma_ij / gamma_ii)
+  foo <- log(gamma / diag(gamma))
+  tgamma <- as.vector(foo[!diag(m)])
+  if (stationary) {
+    tdelta <- NULL
+  } else {
+    tdelta <- log(delta[-1] / delta[1])
+    parvect <- c(tlambda, tgamma, tdelta)
+  }
+  return(parvect)
+}
+```
+
+```{r}
+# (Poisson) Transform working parameters to natural parameters
+pois.HMM.pw2pn <- function(m, parvect, stationary = TRUE) 
+{
+  lambda <- exp(parvect[1:m])
+  # Creating a  m * m identity matrix
+  gamma <- diag(m)
+  # Set the off-diagonal elements in the matrix, starting from 1st col and moving down
+  gamma[!gamma] <- exp(parvect[(m+1) : (m*m)])
+  # Divide each element by the row sum, so the rows will sum to 1
+  gamma <- gamma / apply(gamma, 1, sum)
+  
+  if (stationary) {
+    # Obtain initial dist for stationary dist by solving system of equations <-> delta (I_m - Gamma + U) = 1
+    delta <- solve(t(diag(m) - gamma + 1), rep(1, m))
+  } else {
+    # Obtain the initial dist for not stationary dist
+    foo <- c(1, exp(parvect[(m*m + 1): (m*m+m-1)]))
+    delta <- foo / sum(foo)
+  }
+  
+  return(list(lambda = lambda, gamma = gamma, delta = delta))
+}
+```
+
+```{r}
+# Compute negative log-likelihood from the working parameters
+# parvect: working parameters
+# x: observations
+# m: number of states
+pois.HMM.mllk <- function(parvect, x, m, stationary = TRUE) {
+  if (m = 1) {
+    # If only one state, parvect should only contain log(lambda)
+    # Then the log-lik is the sum of log(p(x))
+    return (-sum(dpois(x, exp(parvect), log = TRUE)))
+  }
+  
+  t <- length(x)
+  pn <- pois.HMM.pw2pn(m, parvect, stationary = stationary)
+  alpha <- delta * dpois(x[1], lambda)
+  # sum(alpha) is w1 = delta * P(x1) * 1
+  lscale <- log(sum(alpha))
+  alpha <- alpha / sum(alpha)
+  for (t in 2:T) {
+    if (!is.na(x[i])) {
+      P <- dpois(x[i], pn$lambda)
+    }
+    else {
+      P <- rep(1, m)
+    }
+    Gamma
+    alpha <- alpha %*% pn$gamma * P
+    lscale <- lscale + log(sum(alpha))
+    alpha <- alpha / sum(alpha)
+  }
+  mllk <- -lscale
+  return(mllk)
+}
+```
+
+```{r}
+pois.HMM.mle <- function(x, m, lambda0, gamma0, delta0 = NULL, stationary = TRUE) {
+  # Get working params
+  parvect0 <- pois.HMM.pn2pw(m, lambda0, gamma0, delta0, stationary = stationary)
+  # nlm is an unconstarined minimizer
+  mod <- nlm(pois.HMM.mllk, parvect0, x = x, m = m, stationary = stationary)
+  # Transform estimates of working parameters into estimates of natural parameters
+  pn <- pois.HMM.pw2pn(m, mode$estimate, stationary = stationary)
+  mllk <- mod$minimum
+  # np is the number of estimated parameters
+  np <- length(parvect0)
+  AIC <- 2 * (mllk + np)
+  n <- sum(!is.na(x))
+  BIC <- 2 * mllk + np * log(n)
+  list(m = m, lambda = pn$lambda, gamma = pn$gamma, delta = pn$delta, 
+       code = mod$code, mllk = mllk, AIC = AIC, BIC = BIC)
+}
+```
+
+# Fit Normal HMM
+
+```{r}
+norm.HMM.generate_sample <- function(t, mod) {
+  mvect <- 1 : mod$m
+  state <- numeric(t)
+  state[1] <- sample(mvect, 1, prob = mod$delta)
+  for (i in 2:t) {
+    state[i] <- sample(mvect, 1, prob =mod$gamma[state[i-1],])
+  }
+  x <- rnorm(t, mean = mod$mu[state], sd = mod$sigma[state])
+  return(data.frame(index = c(1:t), state = state, obs = x))
+}
+```
+
+
+```{r}
+t = 48
+norm3s <- list(m = 3,
+               mu = c(12, 18, 22),
+               sigma = c(3, 1.5, 2),
+               gamma = matrix(c(0.9, 0.03, 0.07,
+                                0.05, 0.899, 0.051,
+                                0.05, 0.15, 0.8), nrow = 3, ncol = 3, byrow = TRUE),
+               delta = c(0.333, 0.438, 0.228)
+               )
+
+set.seed(42)
+sample <- norm.HMM.generate_sample(t, norm3s)
+data <- data.frame(Time = c(1:t),
+                   Observation = sample$obs,
+                   State = factor(sample$state))
+
+timeseries(data)
+norm_hist_dist(m = 3, hmmdata = data, mod = norm3s)
+```
+
+```{r}
+timeseries <- function(hmmdata,
+                          title = 'Time Series of Simulated HMM',
+                          xlabel = 'Time',
+                          ylabel = 'Observation') {
+  ggplot(hmmdata, aes(x = Time, y = Observation)) +
+    theme_light() +
+    ggtitle(title) +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    geom_point(aes(color = State))+
+    geom_line(colour='grey', alpha=0.8, lwd=0.4) +
+    labs(x = xlabel, y = ylabel)
+}
+
+norm_hist_dist <- function(m, hmmdata, mod, width=1){
+  observ = hmmdata$Observation
+  state = hmmdata$State
+  
+  h <- ggplot() + 
+    geom_histogram(data=hmmdata, 
+                   aes(x=Observation), 
+                   binwidth = width,
+                   colour="cornsilk4",
+                   fill="white") +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank())
+  xfit <- seq(min(observ), max(observ))
+  marginal <- numeric(length(xfit))
+  
+  for (i in 1:m) {
+    yfit <- dnorm(xfit, mod$mu[i], mod$sigma[i])
+    yfit <- yfit * sum(state==i) * width
+    df <- data.frame('xfit' = xfit, 'yfit' = yfit, col = as.factor(rep(i, length(xfit))))
+    h <- h + geom_line(data=df,aes(xfit, yfit, colour=col), lwd=0.7)
+    marginal <- marginal + yfit
+  }
+  h <- h + labs(color = "State")
+  df <- data.frame('xfit' = xfit, 'yfit' = marginal)
+  h <- h + geom_line(data=df,aes(xfit, yfit), col="black", lwd=0.7)
+  
+  return(h)
+}
+```
+
+
+
+
