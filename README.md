@@ -20,11 +20,15 @@ The analysis part are written in R and R Studio, the pdf file is here: [Identify
 
 Two gifs are made for the identification respectively, [pass](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/event1_passing.gif) and [3pt shooting](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/event28_3pt.gif).
 
+
+
 2. Identify the layup following other's case.
 
 The codes are written in R and R Studio, the pdf file is in the same location: [Identify the Layup by HMM](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/basketball.pdf).
 
 Reference: [Tagging Basketball Events with HMM in stan](https://mc-stan.org/users/documentation/case-studies/bball-hmm.html#pre-process-data)
+
+
 
 3. Writing codes for simulating a simple basketball game (leading or falling behind, and what are the strategies under these cases) by HMM.
 
