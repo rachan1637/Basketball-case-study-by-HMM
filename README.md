@@ -14,11 +14,13 @@ Identify the 3pt shooting together with long pass. Consider the dribble, and oth
 
 (a) Idetify the long pass and 3pt shooting.
 
-The preprocessing codes are written in python ([preprocess data](https://github.com/rachan1637/Basketball-case-study-by-HMM/tree/main/Basketball/data_preprocess)).
+The data is obtained from [this repo](https://github.com/sealneaward/nba-movement-data), Credit: [@sealneaward](https://github.com/sealneaward) and [@neilmj](https://github.com/neilmj/BasketballData)
+
+The additional preprocessing codes are written in python ([preprocess data](https://github.com/rachan1637/Basketball-case-study-by-HMM/tree/main/Basketball/data_preprocess)), including swithcing the player name and creating speed.
 
 The analysis part are written in R and R Studio, the pdf file is here: [Identify long pass and 3pt shooting](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/basketball2.pdf).
 
-Two gifs are made for the identification respectively, [pass](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/event1_passing.gif) and [3pt shooting](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/event28_3pt.gif).
+Two gif plots are made for the identification respectively, [pass](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/event1_passing.gif) and [3pt shooting](https://github.com/rachan1637/Basketball-case-study-by-HMM/blob/main/Basketball/event28_3pt.gif).
 
 <br>
 
