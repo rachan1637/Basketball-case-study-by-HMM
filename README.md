@@ -1,6 +1,6 @@
 # Fall: Statistical Methods and Analyses in Sports
 
-In this fall term, we start a reading course. I read through the textbook "Handbook of Statistical Methods and Analyses in Sports" from Chapter 9-12, and I also quickly go over the first 12 chapters of "Bayesian Data Analysis".
+In this fall term, we start a reading course about sports analytics. We read through the textbook "Handbook of Statistical Methods and Analyses in Sports" from Chapter 9-12, and quickly go over the first 12 chapters of "Bayesian Data Analysis".
 
 The notes could be found in [Reading Notes](https://github.com/rachan1637/basketballHMM/tree/main/Reading%20Course/Reading%20Notes).
 
