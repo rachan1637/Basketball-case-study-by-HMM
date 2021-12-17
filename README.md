@@ -8,7 +8,7 @@ Also, the project specifically focuses on the Chapter 12 of the HSMAS, about fit
 
 The code for fitting the intensity surface is modified from the Github Repo [flecks](https://github.com/andymiller/flecks), contributed by one of the authors of the chapter, Andrew Miller.
 
-However, the fitted surfaces are still problematic, since the intensity surface around the three point line is hard to converge.
+However, the fitted surfaces are still problematic, since the intensity surface around the three point line is hard to converge. The current progress can still be viewed in the notebook [Project](https://github.com/rachan1637/basketballHMM/blob/main/Reading%20Course/Project.ipynb).
 
 We might continue to make the fitting process work in the next few weeks. Besides, the next step of this interesting project will be discussed later.
 
