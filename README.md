@@ -1,4 +1,18 @@
-# Detecting Basketball Events by HMM
+# Fall: Statistical Methods and Analyses in Sports
+
+In this fall term, we start a reading course about sports analytics. We read through the textbook "Handbook of Statistical Methods and Analyses in Sports" from Chapter 9-12, and quickly go over the first 12 chapters of "Bayesian Data Analysis".
+
+The notes could be found in [Reading Notes](https://github.com/rachan1637/basketballHMM/tree/main/Reading%20Course/Reading%20Notes).
+
+Also, the project specifically focuses on the Chapter 12 of the HSMAS, about fitting the intensity surface for player's shots and typifying players based on the surface, is created in the last few weeks. 
+
+The code for fitting the intensity surface is modified from the Github Repo [flecks](https://github.com/andymiller/flecks), contributed by one of the authors of the chapter, Andrew Miller.
+
+However, the fitted surfaces are still problematic, since the intensity surface around the three point line is hard to converge.
+
+We might continue to make the fitting process work in the next few weeks. Besides, the next step of this interesting project will be discussed later.
+
+# Summer: Detecting Basketball Events by HMM
 
 The goal of the case study is to use HMM for modelling basketball data and provide useful insights, advised by Professor Vianey Leos Barajas.
 
